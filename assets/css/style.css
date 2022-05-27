@@ -1,0 +1,13 @@
+body {
+    height: 100vh;
+}
+
+h1 {
+    align-self: center;
+}
+
+img {
+    align-self: center;
+    width: 300px;
+    height: 300px;
+}
