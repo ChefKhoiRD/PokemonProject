@@ -43,14 +43,26 @@ function getPokemon(pokemon) {
         cry.play();
     }
     fetch(`${randomPokeUrl}${pokemon}`)
-        .then(function (response) {
+        .then(function(response) {
             return response.json();
         })
-        .then(function (data) {
+        .then(function(data) {
             // set the h1 to the pokemon's name, capitalizing the first letter via charAt and then concatenating the rest of the name via slice, removes hide class keeping element hidden
             $("#pokename").text(data.species.name.charAt(0).toUpperCase() + data.species.name.slice(1)).removeClass("hide");
             // set the img to the pokemon's sprite, removes hide class keeping element hidden
             $("#pokeimg").attr("src", data.sprites.front_default).removeClass("hide");
+            // fetch cards based off generated pokemon's name
+            fetch(`https://api.pokemontcg.io/v2/cards/?q=name:${data.species.name}`, {
+                headers: {
+                    XApiKey: '6f0066f9-4a35-4bc2-9d6e-cfe8c5948200'
+                }
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (data) {
+                    createCards(data);
+                });
         });
 };
 
