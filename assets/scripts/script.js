@@ -12,13 +12,7 @@ fetch(allPokeUrl)
     .then(function (response) {
         return response.json();
     })
-<<<<<<< HEAD
-    .then(function(data) {
-        var random;
-        var cap;
-=======
     .then(function (data) {
->>>>>>> search
         // iterate through length of data
         for (i = 0; i < data.results.length; i++) {
             // push our pokemon array the name of our pokemon
@@ -31,45 +25,8 @@ fetch(allPokeUrl)
                 i = data.results.length;
             };
         };
-<<<<<<< HEAD
-        // generate the random number with the cap
-        random = Math.floor(Math.random() * cap);
-        // create a cry audio object using our resource and the random pokemon
-        cry = new Audio(`${cryurl}${random}.ogg`);
-        // lower volume because this stuff really blasts your ears
-        cry.volume = .1;
-        // if there is an error retrieving the sound, stop function and run it again
-        cry.onerror = function() {
-            getPokemon();
-            return;
-        };
-        cry.play();
-        fetch(`${randomPokeUrl}${random}`)
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(data) {
-                // set the h1 to the pokemon's name, capitalizing the first letter via charAt and then concatenating the rest of the name via slice, removes hide class keeping element hidden
-                $("#pokename").text(data.species.name.charAt(0).toUpperCase() + data.species.name.slice(1)).removeClass("hide");
-                // set the img to the pokemon's sprite, removes hide class keeping element hidden
-                $("#pokeimg").attr("src", data.sprites.front_default).removeClass("hide");
-                // fetch cards based off generated pokemon's name
-                fetch(`https://api.pokemontcg.io/v2/cards/?q=name:${data.species.name}`, {
-                    headers: {
-                        XApiKey: '6f0066f9-4a35-4bc2-9d6e-cfe8c5948200'
-                    }
-                })
-                    .then(function (response) {
-                        return response.json();
-                    })
-                    .then(function (data) {
-                        createCards(data);
-                    });
-            });
-=======
         // unhide content after we get all our pokemon
         $("body").removeClass("hide");
->>>>>>> search
     });
 
 // function to get a random pokemon + cry
@@ -97,15 +54,10 @@ function getPokemon(pokemon) {
         });
 };
 
-<<<<<<< HEAD
-$("#generate").click(function() {
-    getPokemon();
-=======
 $("#generate").click(function () {
     // generate the random number with the cap
     random = Math.floor(Math.random() * cap);
     getPokemon(random);
->>>>>>> search
 });
 
 // function to pass each card into generateCard
@@ -136,10 +88,6 @@ function getDataNumber(data) {
     return pokeNum;
 };
 
-<<<<<<< HEAD
-$("#pokeimg").click(function() {
-    cry.play();
-=======
 $("#pokeimg").click(function () {
     // if there is no error for cry, then try to play it
     if(!cry.error) cry.play();
@@ -165,5 +113,4 @@ $(function () {
     $('#search').autocomplete({
         source: pokemonNames
     });
->>>>>>> search
 });
