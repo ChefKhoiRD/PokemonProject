@@ -2,58 +2,97 @@ var allPokeUrl = 'https://pokeapi.co/api/v2/pokemon?limit=10000';
 var randomPokeUrl = 'https://pokeapi.co/api/v2/pokemon/';
 var cryurl = 'https://veekun.com/dex/media/pokemon/cries/';
 var cry;
+var pokemonNames = [];
+var random;
+var cap;
 
-// function to get a random pokemon + cry
-function getPokemon() {
-    // get all the pokemon from the API
-    fetch(allPokeUrl)
-    .then(function(response) {
+
+// get all the pokemon from the API
+fetch(allPokeUrl)
+    .then(function (response) {
         return response.json();
     })
-    .then(function(data) {
-        console.log(data)
-        pokemon = data;
-        var random;
-        var cap;
+    .then(function (data) {
         // iterate through length of data
-        for(i = 0; i < data.results.length; i++) {
+        for (i = 0; i < data.results.length; i++) {
+            // push our pokemon array the name of our pokemon
+            pokemonNames.push(data.results[i].name.charAt(0).toUpperCase() + data.results[i].name.slice(1));
             // trim off the URL from the pokemon #
             var urlString = getDataNumber(data.results[i].url);
             // end loop once we get to the end of real pokemon and not alternate forms/regional variants, set our RNG cap when we do so
-            if(urlString != (i + 1)) {
+            if (urlString != (i + 1)) {
                 cap = (i + 1);
                 i = data.results.length;
             };
         };
-        // generate the random number with the cap
-        random = Math.floor(Math.random() * cap);
-        // create a cry audio object using our resource and the random pokemon
-        cry = new Audio(`${cryurl}${random}.ogg`);
-        // lower volume because this stuff really blasts your ears
-        cry.volume = .1;
-        // 
-        cry.onerror = function() {
-            getPokemon();
-            return;
-        };
-        cry.play();
-        fetch(`${randomPokeUrl}${random}`)
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(data) {
-                // set the h1 to the pokemon's name, capitalizing the first letter via charAt and then concatenating the rest of the name via slice, removes hide class keeping element hidden
-                $("#pokename").text(data.species.name.charAt(0).toUpperCase() + data.species.name.slice(1)).removeClass("hide");
-                // set the img to the pokemon's sprite, removes hide class keeping element hidden
-                $("#pokeimg").attr("src", data.sprites.front_default).removeClass("hide");
-            });
+        // unhide content after we get all our pokemon
+        $("body").removeClass("hide");
     });
+
+// function to get a random pokemon + cry
+function getPokemon(pokemon) {
+    // create a cry audio object using our resource and the random pokemon
+    cry = new Audio(`${cryurl}${pokemon}.ogg`);
+    // lower volume because this stuff really blasts your ears
+    cry.volume = .1;
+    $("#error").text("");
+    cry.onerror = function () {
+        $("#error").text("This cry is unavailable at the moment.").attr("style", "color: red;");
+    };
+    cry.oncanplay = function() {
+        cry.play();
+    }
+    fetch(`${randomPokeUrl}${pokemon}`)
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            // set the h1 to the pokemon's name, capitalizing the first letter via charAt and then concatenating the rest of the name via slice, removes hide class keeping element hidden
+            $("#pokename").text(data.species.name.charAt(0).toUpperCase() + data.species.name.slice(1)).removeClass("hide");
+            // set the img to the pokemon's sprite, removes hide class keeping element hidden
+            $("#pokeimg").attr("src", data.sprites.front_default).removeClass("hide");
+            // fetch cards based off generated pokemon's name
+            fetch(`https://api.pokemontcg.io/v2/cards/?q=name:${data.species.name}`, {
+                headers: {
+                    XApiKey: '6f0066f9-4a35-4bc2-9d6e-cfe8c5948200'
+                }
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (data) {
+                    createCards(data);
+                });
+        });
 };
 
-$("#generate").click(function() {
-    getPokemon()
-    return console.log("This is the pokemon" + pokemon)
+$("#generate").click(function () {
+    // generate the random number with the cap
+    random = Math.floor(Math.random() * cap);
+    getPokemon(random);
 });
+
+// function to pass each card into generateCard
+function createCards(cardsArray) {
+    // remove any cards already on the page
+    $("#cards").children().remove();
+    // loop through the cardsArray and generate a card DOM object for each entry
+    for (card = 0; card < cardsArray.data.length; card++) {
+        generateCard(cardsArray.data[card]);
+    };
+};
+
+// function to generate a DOM object for a given card
+function generateCard(card) {
+    // create a div to contain the card image, we know the incoming image size so we've adjusted the width/height
+    var newCard = $("<div>").attr("style", "width: 255px; height: 352px; display: flex; justify-content: center; align-items: center;");
+    // create an image and give it the card source, with contain to keep aspect ratio
+    var cardImg = $("<img>").attr("src", card.images.small).attr("style", "object-fit: contain;");
+    // append the card to the div
+    newCard.append(cardImg);
+    // append the dive to the DOM
+    $("#cards").append(newCard);
+};
 
 // function to filter out everything from the URL besides the pokemon number
 function getDataNumber(data) {
@@ -61,18 +100,29 @@ function getDataNumber(data) {
     return pokeNum;
 };
 
-$("#pokeimg").click(function() {
-    cry.play();
+$("#pokeimg").click(function () {
+    // if there is no error for cry, then try to play it
+    if(!cry.error) cry.play();
 });
 
-fetch('https://api.pokemontcg.io/v2/cards/', {
-    headers: {
-        XApiKey: '6f0066f9-4a35-4bc2-9d6e-cfe8c5948200'
-    }
-})
-    .then(function(response) {
-        return response.json()
-    })
-    .then(function(data) {
-        console.log(data)
-    })
+$("form").submit(function(event) {
+    // preventDefault so we don't reload page
+    event.preventDefault();
+    // assign the searched text to a variable for readable usage
+    searched = $(event.target)[0][0].value
+    // iterate through the pokemonNames array
+    for (poke = 0; poke < pokemonNames.length; poke++) {
+        // if the looked at pokemonNames is what was searched
+        if(pokemonNames[poke] == searched) {
+            // getPokemon with the index + 1 (array is offset from dex by 1)
+            getPokemon((poke + 1));
+        };
+    };
+});
+
+// Autocomplete for search box
+$(function () {
+    $('#search').autocomplete({
+        source: pokemonNames
+    });
+});
