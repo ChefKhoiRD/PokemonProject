@@ -1,5 +1,7 @@
-var allPokeUrl = 'https://pokeapi.co/api/v2/pokemon?limit=10000'
-var randomPokeUrl = 'https://pokeapi.co/api/v2/pokemon/'
+var allPokeUrl = 'https://pokeapi.co/api/v2/pokemon?limit=10000';
+var randomPokeUrl = 'https://pokeapi.co/api/v2/pokemon/';
+var cryurl = 'https://veekun.com/dex/media/pokemon/cries/';
+var cry;
 
 // function to get a random pokemon + cry
 function getPokemon() {
@@ -17,12 +19,16 @@ function getPokemon() {
             var urlString = getDataNumber(data.results[i].url);
             // end loop once we get to the end of real pokemon and not alternate forms/regional variants, set our RNG cap when we do so
             if(urlString != (i + 1)) {
-                cap = i;
+                cap = (i + 1);
                 i = data.results.length;
             };
         };
         // generate the random number with the cap
         random = Math.floor(Math.random() * cap);
+        cry = new Audio(`${cryurl}${random}.ogg`)
+        console.log(cry)
+        cry.volume = .2;
+        // fetch the pokemon corresponding with the random number
         fetch(`${randomPokeUrl}${random}`)
             .then(function(response) {
                 return response.json();
@@ -43,3 +49,10 @@ function getDataNumber(data) {
     var pokeNum = data.split("pokemon/").pop().split("/").shift();
     return pokeNum;
 };
+
+$("#pokeimg").click(function() {
+    cry.play();
+    var msg = new SpeechSynthesisUtterance();
+    msg.text = "Sound not found.";
+    window.speechSynthesis.speak(msg);
+});
