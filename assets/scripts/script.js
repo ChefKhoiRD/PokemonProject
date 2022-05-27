@@ -11,8 +11,6 @@ function getPokemon() {
         return response.json();
     })
     .then(function(data) {
-        console.log(data)
-        pokemon = data;
         var random;
         var cap;
         // iterate through length of data
@@ -31,7 +29,7 @@ function getPokemon() {
         cry = new Audio(`${cryurl}${random}.ogg`);
         // lower volume because this stuff really blasts your ears
         cry.volume = .1;
-        // 
+        // if there is an error retrieving the sound, stop function and run it again
         cry.onerror = function() {
             getPokemon();
             return;
@@ -46,14 +44,47 @@ function getPokemon() {
                 $("#pokename").text(data.species.name.charAt(0).toUpperCase() + data.species.name.slice(1)).removeClass("hide");
                 // set the img to the pokemon's sprite, removes hide class keeping element hidden
                 $("#pokeimg").attr("src", data.sprites.front_default).removeClass("hide");
+                // fetch cards based off generated pokemon's name
+                fetch(`https://api.pokemontcg.io/v2/cards/?q=name:${data.species.name}`, {
+                    headers: {
+                        XApiKey: '6f0066f9-4a35-4bc2-9d6e-cfe8c5948200'
+                    }
+                })
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (data) {
+                        createCards(data);
+                    });
             });
     });
 };
 
 $("#generate").click(function() {
-    getPokemon()
-    return console.log("This is the pokemon" + pokemon)
+    getPokemon();
 });
+
+// function to pass each card into generateCard
+function createCards(cardsArray) {
+    // remove any cards already on the page
+    $("#cards").children().remove();
+    // loop through the cardsArray and generate a card DOM object for each entry
+    for (card = 0; card < cardsArray.data.length; card++) {
+        generateCard(cardsArray.data[card]);
+    };
+};
+
+// function to generate a DOM object for a given card
+function generateCard(card) {
+    // create a div to contain the card image, we know the incoming image size so we've adjusted the width/height
+    var newCard = $("<div>").attr("style", "width: 255px; height: 352px; display: flex; justify-content: center; align-items: center;");
+    // create an image and give it the card source, with contain to keep aspect ratio
+    var cardImg = $("<img>").attr("src", card.images.small).attr("style", "object-fit: contain;");
+    // append the card to the div
+    newCard.append(cardImg);
+    // append the dive to the DOM
+    $("#cards").append(newCard);
+};
 
 // function to filter out everything from the URL besides the pokemon number
 function getDataNumber(data) {
@@ -64,15 +95,3 @@ function getDataNumber(data) {
 $("#pokeimg").click(function() {
     cry.play();
 });
-
-fetch('https://api.pokemontcg.io/v2/cards/', {
-    headers: {
-        XApiKey: '6f0066f9-4a35-4bc2-9d6e-cfe8c5948200'
-    }
-})
-    .then(function(response) {
-        return response.json()
-    })
-    .then(function(data) {
-        console.log(data)
-    })
