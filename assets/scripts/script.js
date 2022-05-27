@@ -13,7 +13,6 @@ fetch(allPokeUrl)
         return response.json();
     })
     .then(function (data) {
-        console.log(data.results)
         // iterate through length of data
         for (i = 0; i < data.results.length; i++) {
             // push our pokemon array the name of our pokemon
@@ -36,12 +35,13 @@ function getPokemon(pokemon) {
     cry = new Audio(`${cryurl}${pokemon}.ogg`);
     // lower volume because this stuff really blasts your ears
     cry.volume = .1;
-    // 
+    $("#error").text("");
     cry.onerror = function () {
-        getPokemon(pokemon);
-        return;
+        $("#error").text("This cry is unavailable at the moment.").attr("style", "color: red;");
     };
-    cry.play();
+    cry.oncanplay = function() {
+        cry.play();
+    }
     fetch(`${randomPokeUrl}${pokemon}`)
         .then(function (response) {
             return response.json();
@@ -67,7 +67,8 @@ function getDataNumber(data) {
 };
 
 $("#pokeimg").click(function () {
-    cry.play();
+    // if there is no error for cry, then try to play it
+    if(!cry.error) cry.play();
 });
 
 $("form").submit(function(event) {
@@ -85,21 +86,9 @@ $("form").submit(function(event) {
     };
 });
 
-fetch('https://api.pokemontcg.io/v2/cards/', {
-    headers: {
-        XApiKey: '6f0066f9-4a35-4bc2-9d6e-cfe8c5948200'
-    }
-})
-    .then(function (response) {
-        return response.json()
-    })
-    .then(function (data) {
-        console.log(data)
-    })
-
-// Autocomplete widget
+// Autocomplete for search box
 $(function () {
     $('#search').autocomplete({
-        source: pokemonNames,
+        source: pokemonNames
     });
 });
