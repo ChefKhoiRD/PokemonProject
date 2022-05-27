@@ -2,7 +2,8 @@ var allPokeUrl = 'https://pokeapi.co/api/v2/pokemon?limit=10000';
 var randomPokeUrl = 'https://pokeapi.co/api/v2/pokemon/';
 var cryurl = 'https://veekun.com/dex/media/pokemon/cries/';
 var cry;
-
+var errorSpeech = new SpeechSynthesisUtterance()
+//errorSpeech.text =
 // function to get a random pokemon + cry
 function getPokemon() {
     // get all the pokemon from the API
@@ -26,9 +27,12 @@ function getPokemon() {
         // generate the random number with the cap
         random = Math.floor(Math.random() * cap);
         cry = new Audio(`${cryurl}${random}.ogg`)
-        console.log(cry)
-        cry.volume = .2;
-        // fetch the pokemon corresponding with the random number
+        cry.volume = .1;
+        cry.onerror = function() {
+            getPokemon();
+            return;
+        }
+        cry.play();
         fetch(`${randomPokeUrl}${random}`)
             .then(function(response) {
                 return response.json();
@@ -52,7 +56,4 @@ function getDataNumber(data) {
 
 $("#pokeimg").click(function() {
     cry.play();
-    var msg = new SpeechSynthesisUtterance();
-    msg.text = "Sound not found.";
-    window.speechSynthesis.speak(msg);
 });
