@@ -48,11 +48,32 @@ function getPokemon(pokemon) {
         })
         .then(function(data) {
             // set the h1 to the pokemon's name, capitalizing the first letter via charAt and then concatenating the rest of the name via slice, removes hide class keeping element hidden
-            $("#pokename").text(data.species.name.charAt(0).toUpperCase() + data.species.name.slice(1)).removeClass("hide");
+            $("#pokename").text(data.name.charAt(0).toUpperCase() + data.name.slice(1)).removeClass("hide");
+
+            // setting pokemon weight from incorrectly inputted kilograms to lbs
+            function pokemonWeight() {
+                $("#pokewei").text(data.weight);
+                var convertedWeight = data.weight * 0.22;
+                document.getElementById("convertedWeight").textContent = "Weight:" + convertedWeight + "lbs";
+
+            }
+            pokemonWeight();
+
+            // setting converted pokemon height
+            function pokemonHeight() {
+                 $("#pokehei").text(data.height);
+                 var convertedHeight = Math.ceil (data.height * 3.93701);
+                 var inches = convertedHeight%12;
+                 var feet = Math.floor(convertedHeight/12);
+                 document.getElementById("convertedHeight").textContent = "Height:" + feet + "\'" + inches + "\"";
+            }
+           pokemonHeight();
+
+
             // set the img to the pokemon's sprite, removes hide class keeping element hidden
             $("#pokeimg").attr("src", data.sprites.front_default).removeClass("hide");
             // fetch cards based off generated pokemon's name
-            fetch(`https://api.pokemontcg.io/v2/cards/?q=name:${data.species.name}`, {
+            fetch(`https://api.pokemontcg.io/v2/cards/?q=name:${data.name}`, {
                 headers: {
                     XApiKey: '6f0066f9-4a35-4bc2-9d6e-cfe8c5948200'
                 }
@@ -62,9 +83,11 @@ function getPokemon(pokemon) {
                 })
                 .then(function (data) {
                     createCards(data);
+                    console.log(data);
                 });
         });
 };
+
 
 $("#generate").click(function () {
     // generate the random number with the cap
