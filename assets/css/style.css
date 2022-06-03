@@ -15,6 +15,7 @@ h2 {
 }
 
 .container {
+    padding-top: 100px;
     position: relative;
     justify-content: center;
 }
@@ -38,26 +39,7 @@ h2 {
     height: 474px;
 }
 
-#poketype {
-
-}
-
-#pokename {
-    display: inline-block;
+#right-text-info {
     position: absolute;
-    left: 480px;
-    top: 150px;
-}
-#convertedWeight {
-    display: inline-block;
-    position: absolute;
-    right: 85px;
-    top: 170px;
-}
-
-#convertedHeight {
-    display: inline-block;
-    position: absolute;
-    right: 220px;
-    top: 170px;
+    right: 50px;
 }

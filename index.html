@@ -23,27 +23,24 @@
                 <p id="error"></p>
                 <img id="pokeimg" class="hide">
                 <input id="generate" type="button" value="?">
-                <br><label>Or search for a Pokemon</label>
                 <form>
                     <input id="search" type="text" placeholder="Pokemon Name">
                 </form>
         </div>
         <div id="second" class="small-12 medium-6 large-6 container">
-            <h2 id="pokename" class="hide"></h2>
-            <h2 id="convertedWeight" maxlength="4"></h2>
-            <h2 id="convertedHeight"></h2>
-            <h2 id="poketype"></h2>
+            <div id="right-text-info">
+                <h2 id="pokename" class="hide"></h2>
+                <h2 id="convertedWeight" maxlength="4"></h2>
+                <h2 id="convertedHeight"></h2>
+                <h2 id="poketype"></h2>
+            </div>
+            <input id="togglecards" type="button" value="Show Cards" class="hide">     
         </div>
     </div>
-        <input id="generate" type="button" value="Click Me" class="cell">
-        <br><label>Or search for a Pokemon</label>
-        <form>
-            <input id="search" type="text" placeholder="Pokemon Name">
-        </form>
-        <input id="togglecards" type="button" value="Show Cards" class="cell hide">
+
     </div>
     </div>
-    <div id="cards" class="grid-x cell small-12 align-spaced"></div>
+    <div id="cards" class="grid-x cell small-12 align-spaced hide"></div>
     <script
         src="https://code.jquery.com/jquery-3.6.0.js"
         integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
