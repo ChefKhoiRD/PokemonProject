@@ -37,11 +37,11 @@ h2 {
 
 #pokeimg {
     display: inline-block;
-    width: 200px;
-    height: 200px;
+    width: 180px;
+    height: 180px;
     position: absolute;
-    left: 100px;
-    top: 180px;
+    left: 110px;
+    top: 190px;
 }
 
 #convertedWeight {
