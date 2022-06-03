@@ -76,7 +76,7 @@ function getPokemonImage(pokemon) {
             function pokemonWeight() {
                 $("#pokewei").text(data.weight);
                 var convertedWeight = Math.ceil (data.weight * 0.22);
-                document.getElementById("convertedWeight").textContent = "Weight:" + convertedWeight + " lbs";
+                document.getElementById("convertedWeight").textContent = "Weight: " + convertedWeight + " lbs";
 
             }
             pokemonWeight();
@@ -86,12 +86,12 @@ function getPokemonImage(pokemon) {
                  var convertedHeight = Math.ceil (data.height * 3.93701);
                  var inches = convertedHeight%12;
                  var feet = Math.floor(convertedHeight/12);
-                 document.getElementById("convertedHeight").textContent = "Height:" + feet + "\'" + inches + "\"";
+                 document.getElementById("convertedHeight").textContent = "Height: " + feet + "\'" + inches + "\"";
             }
            pokemonHeight();
 
            // getting the pokemon type from API
-          var types =  `types: ${data.types[0].type.name}`
+          var types =  `Types: ${data.types[0].type.name}`
           if (data.types.length > 1) {
               types+= `, ${data.types[1].type.name}`
           }
@@ -165,7 +165,7 @@ function trimPoke(string) {
 // audio error functions
 function cryerror() {
     // if there is an error with the audio file, notify user
-    $("#error").text("This cry is unavailable at the moment.").attr("style", "color: red;");
+    $("#error").text("Unknown Cry").attr("style", "color: black;");
 };
 function crycanplay() {
     // set the error text to nothing because we have no error

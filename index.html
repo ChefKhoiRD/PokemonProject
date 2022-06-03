@@ -5,7 +5,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="assets/css/normalize.css">
+    <link rel="stylesheet" 
+        href="assets/css/normalize.css">
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.4/dist/css/foundation.min.css"
         integrity="sha384-amcVvNHXnWYXZUrDw6vvXDHGauVAtED5XPLIkmSOO0n83xuXntAlc8fBQkjizLt5"
@@ -13,27 +14,37 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200&family=Press+Start+2P&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/jquery-ui.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" 
+        href="assets/css/jquery-ui.css">
+    <link rel="stylesheet" 
+        href="assets/css/style.css">
 </head>
 
 <body>
+    <!-- Giving the body a grid and a class of container -->
     <div class="grid-x container">
+
+        <!-- Left side of pokedex screen -->
         <div id="first" class="small-12 medium-6 large-6 container">
+            <!-- Data pulled from API on right side of pokedex -->
+            <div id="first-text-info">
                 <p id="error"></p>
-                <div id="first-tect-info"></div>
-                <img id="pokeimg" class="hide">
+                <img id="pokeimg" class="hide"> 
+            </div>
                 <input id="generate" type="button" value="?">
+            <!-- D-Pad buttons -->
                 <div id="buttons">
-                <input id="backward" type="button" value="<">
-                <input id="forward" type="button" value=">">
-                <input id="backward" type="button" value="ᐱ">
-                <input id="forward" type="button" value="ᐯ">
-            </div>  
+                    <input id="left" type="button" value="<">
+                    <input id="right" type="button" value=">">
+                    <input id="up" type="button" value="ᐱ">
+                    <input id="down" type="button" value="ᐯ">
+                </div>  
                 <form>
-                    <input id="search" type="text" placeholder="Pokemon Name">
+                    <input id="search" type="text" placeholder="Search">
                 </form>
         </div>
+        
+        <!-- Right side of pokedex screen-->
         <div id="second" class="small-12 medium-6 large-6 container">
             <div id="second-text-info">
                 <h2 id="pokename" class="hide"></h2>
@@ -41,13 +52,12 @@
                 <h2 id="convertedHeight"></h2>
                 <h2 id="poketype"></h2>
             </div>
-            <input id="togglecards" type="button" value="Show Cards" class="hide">
-
+            <input id="togglecards" type="button" class="hide" >
         </div>
     </div>
-
     </div>
     </div>
+    <!-- Show all pokemon cards -->
     <div id="cards" class="grid-x cell small-12 align-spaced hide"></div>
     <script
         src="https://code.jquery.com/jquery-3.6.0.js"

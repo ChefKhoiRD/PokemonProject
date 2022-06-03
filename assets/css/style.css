@@ -1,3 +1,4 @@
+/* General */
 body {
     height: 100vh;
 }
@@ -14,12 +15,14 @@ h2 {
     font-family: 'Press Start 2P', cursive;
 }
 
+/* Pokedex styling */
 .container {
     padding-top: 100px;
     position: relative;
     justify-content: center;
 }
 
+/* Left side of pokedex */
 #first {
     background-image: url('../photos/leftpokedex.png');
     background-size: contain;
@@ -29,8 +32,80 @@ h2 {
 }
 
 #first-text-info {
-
+    position: absolute;
+    left: 80px;
+    top: 70px;
 }
+
+#generate {
+    position: absolute;
+    left: 21px;
+    bottom: 98px;
+}
+
+#search {
+    position: absolute;
+    bottom: 22px;
+    left: 90px;
+    background-color: transparent;
+    height: 8%;
+    width: 33%;
+    border: none;
+}
+
+::placeholder {
+    color:black;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 14px;
+}
+
+#error {
+    position: absolute;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 8px;
+    left: 108px;
+    top: 285px;
+}
+
+#pokeimg {
+    position: absolute;
+    left: 00px;
+    top: 00px;
+    width: 150px;
+    height: 150px;
+}
+
+/* buttons styling */
+#buttons {
+    position: absolute;
+    bottom: 50px;
+}
+
+#left {
+    position: absolute;
+    left: 203px;
+    bottom: 24px;
+}
+
+#right {
+    position: absolute;
+    left: 263px;
+    bottom: 24px;
+}
+
+#up {
+    position: absolute;
+    left: 232px;
+    bottom: 55px;
+}
+
+#down {
+    position: absolute;
+    left: 232px;
+    top: -15px;
+}
+
+/* Right side of pokedex */
 #second {
     background-image: url("../photos/rightpokedex.png");
     background-size: contain;
@@ -45,20 +120,20 @@ h2 {
     top: 120px;
 }
 
-#pokeimg {
-    width: 150px;
-    height: 150px;
+#togglecards {
+    background-color: transparent;
+    font-family: 'Press Start 2P', cursive;
+    border: none;
+    position: absolute;
+    right: 30px;
+    bottom: 38px;
 }
 
+/* Pokemon cards styling */
 img {
     align-self: center;
     max-width: 300px;
     max-height: 300px;
     min-height: 300px;
     object-fit: contain;
-}
-
-#buttons {
-    position: absolute;
-    bottom: 50px;
 }
