@@ -72,8 +72,8 @@ function getPokemonImage(pokemon) {
             // setting pokemon weight from incorrectly inputted kilograms to lbs
             function pokemonWeight() {
                 $("#pokewei").text(data.weight);
-                var convertedWeight = data.weight * 0.22;
-                document.getElementById("convertedWeight").textContent = "Weight:" + convertedWeight + "lbs";
+                var convertedWeight = Math.ceil (data.weight * 0.22);
+                document.getElementById("convertedWeight").textContent = "Weight:" + convertedWeight + " lbs";
 
             }
             pokemonWeight();
@@ -86,8 +86,13 @@ function getPokemonImage(pokemon) {
                  document.getElementById("convertedHeight").textContent = "Height:" + feet + "\'" + inches + "\"";
             }
            pokemonHeight();
-            // set the img to the pokemon's sprite, removes hide class keeping element hidden
-            $("#pokeimg").attr("src", data.sprites.front_default).removeClass("hide");
+
+           // getting the pokemon type from API
+          var types =  `types: ${data.types[0].type.name}`
+          if (data.types.length > 1) {
+              types+= `, ${data.types[1].type.name}`
+          }
+            $("#poketype").text(types); 
 
             // set the img to the pokemon's sprite, removes hide class keeping element hidden
             $("#pokeimg").attr("src", data.sprites.front_default).removeClass("hide");

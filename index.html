@@ -17,21 +17,30 @@
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
-<body class="grid-x align-center hide">
-    <div class = "container">
-    <img id = "pokedex" src = "assets/photos/pokedex.png" class = "nohover">
-    <div class="grid-y cell small-2">
-        <h1 id="pokename" class="hide"></h1>
-        <h2 id="convertedWeight" maxlength = "4"></h2>
-        <h2 id="convertedHeight"></h2>
-        <h3 id="poketype" class="hide"></h3>
-        <p id="error"></p>
-        <img id="pokeimg" class="hide">
+<body>
+    <div class="grid-x container">
+        <div id="first" class="small-12 medium-6 large-6 container">
+                <p id="error"></p>
+                <img id="pokeimg" class="hide">
+                <input id="generate" type="button" value="?">
+                <br><label>Or search for a Pokemon</label>
+                <form>
+                    <input id="search" type="text" placeholder="Pokemon Name">
+                </form>
+        </div>
+        <div id="second" class="small-12 medium-6 large-6 container">
+            <h2 id="pokename" class="hide"></h2>
+            <h2 id="convertedWeight" maxlength="4"></h2>
+            <h2 id="convertedHeight"></h2>
+            <h2 id="poketype"></h2>
+        </div>
+    </div>
         <input id="generate" type="button" value="Click Me" class="cell">
         <br><label>Or search for a Pokemon</label>
         <form>
             <input id="search" type="text" placeholder="Pokemon Name">
         </form>
+        <input id="togglecards" type="button" value="Show Cards" class="cell hide">
     </div>
     </div>
     <div id="cards" class="grid-x cell small-12 align-spaced"></div>

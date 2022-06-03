@@ -4,6 +4,7 @@ body {
 
 h1 {
     align-self: center;
+    font-size: 9px;
     font-family: 'Press Start 2P', cursive;
 }
 
@@ -15,45 +16,48 @@ h2 {
 
 .container {
     position: relative;
+    justify-content: center;
 }
 
 .nohover {
     pointer-events: none;
 }
 
-#pokedex {
-    display: inline-block;
-    width: 800px;
-    height: 600px;
+#first {
+    background-image: url('../photos/leftpokedex.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 305px;
+    height: 474px;
+}
+#second {
+    background-image: url("../photos/rightpokedex.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 305px;
+    height: 474px;
+}
+
+#poketype {
+
 }
 
 #pokename {
     display: inline-block;
     position: absolute;
-    font-size: 12px;
-    left: 135px;
-    top: 515px;
+    left: 480px;
+    top: 150px;
 }
-
-#pokeimg {
-    display: inline-block;
-    width: 180px;
-    height: 180px;
-    position: absolute;
-    left: 110px;
-    top: 190px;
-}
-
 #convertedWeight {
     display: inline-block;
     position: absolute;
-    right: 80px;
-    top: 150px;
+    right: 85px;
+    top: 170px;
 }
 
 #convertedHeight {
     display: inline-block;
     position: absolute;
     right: 220px;
-    top: 150px;
+    top: 170px;
 }
