@@ -2,6 +2,9 @@
 var pokeApiCoUrl = 'https://pokeapi.co/api/v2/pokemon';
 var pokeTcgApiUrl = 'https://api.pokemontcg.io/v2/cards/';
 var cryUrl = 'https://veekun.com/dex/media/pokemon/cries/';
+var pokeIndex = 0;
+var imageindex = 0;
+var pokeImages = [];
 // initializing variables we work with later
 var cry;                    // variable we store audio in for the selected pokemon's cry
 var pokemonNames = [];      // variable we store all pokemon names in, array allows us to also use its index as a way to reference them by pokedex #
@@ -94,13 +97,18 @@ function getPokemonImage(pokemon) {
           }
             $("#poketype").text(types); 
 
+            pokeImages=[];
+            imageindex=0;
+
             // set the img to the pokemon's sprite, removes hide class keeping element hidden
             $("#pokeimg").attr("src", data.sprites.front_default).removeClass("hide");
+            pokeImages.push(data.sprites.front_default);
         });
 };
 
 // function to get a pokemon + cry + cards
 function getPokemon(pokemon) {
+    pokeIndex = pokemon - 1;
     // show the togglecards button
     $("#togglecards").removeClass("hide");
     // get the pokemon's cry
@@ -119,6 +127,7 @@ function createCards(cardsArray) {
     for (card = 0; card < cardsArray.data.length; card++) {
         generateCard(cardsArray.data[card]);
     };
+    console.log(pokeImages);
 };
 
 // function to generate a DOM object for a given card
@@ -131,6 +140,8 @@ function generateCard(card) {
     newCard.append(cardImg);
     // append the dive to the DOM
     $("#cards").append(newCard);
+    pokeImages.push(card.images.large)
+
 };
 
 // function to filter out everything from the URL besides the pokemon number
@@ -221,5 +232,28 @@ $("#pokeimg").click(function () {
     if (!cry.error) cry.play();
 });
 
+// d-pad functionality
+$("#buttons").click(function(event) {
+    if(event.target.value === "ᐱ") {
+        pokeIndex--;
+        if(pokeIndex < 0) pokeIndex = (pokemonNames.length - 1)
+        getPokemon(pokeIndex + 1)
+    }
+    else if (event.target.value === "ᐯ") {
+        pokeIndex++;
+        if(pokeIndex > pokemonNames.length - 1) pokeIndex = (0)
+        getPokemon(pokeIndex + 1)
+    }
+    else if(event.target.value === "<") {
+        imageindex--;
+        if(imageindex < 0) imageindex = (pokeImages.length - 1)
+$("#pokeimg").attr("src", pokeImages[imageindex])
+    }
+    else if (event.target.value === ">") {
+        imageindex++;
+        if(imageindex > pokeImages.length - 1) imageindex = (0)
+        $("#pokeimg").attr("src", pokeImages[imageindex])
+    }
+})
 // when page loads, get all our pokemon so we can work with them
 getAllPokemon();

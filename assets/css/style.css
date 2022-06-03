@@ -20,16 +20,16 @@ h2 {
     justify-content: center;
 }
 
-.nohover {
-    pointer-events: none;
-}
-
 #first {
     background-image: url('../photos/leftpokedex.png');
     background-size: contain;
     background-repeat: no-repeat;
     width: 305px;
     height: 474px;
+}
+
+#first-text-info {
+
 }
 #second {
     background-image: url("../photos/rightpokedex.png");
@@ -39,7 +39,26 @@ h2 {
     height: 474px;
 }
 
-#right-text-info {
+#second-text-info {
     position: absolute;
-    right: 50px;
+    left: 60px;
+    top: 120px;
+}
+
+#pokeimg {
+    width: 150px;
+    height: 150px;
+}
+
+img {
+    align-self: center;
+    max-width: 300px;
+    max-height: 300px;
+    min-height: 300px;
+    object-fit: contain;
+}
+
+#buttons {
+    position: absolute;
+    bottom: 50px;
 }
