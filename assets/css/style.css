@@ -11,8 +11,21 @@ h1 {
 
 h2 {
     align-self: center;
-    font-size: 9px;
+    font-size: 8px;
     font-family: 'Press Start 2P', cursive;
+    padding:0rem;
+    margin: 0rem;
+    margin-bottom:.2rem;
+}
+
+#text {
+    position: absolute;
+    bottom: -10px;
+    left: 20px;
+    background-color: black,.9;
+    border: none;
+    z-index: 1;
+    color:#fff
 }
 
 /* Pokedex styling */
@@ -62,47 +75,70 @@ h2 {
 #error {
     position: absolute;
     font-family: 'Press Start 2P', cursive;
-    font-size: 8px;
-    left: 108px;
-    top: 285px;
+    font-size: 16px;
+    left: 66px;
+    top: 205px;
+}
+
+/* Pokemon image styling */
+img {
+    align-self: center;
+    max-width: 105px;
+    max-height: 125px;
+    min-height: 125px;
 }
 
 #pokeimg {
     position: absolute;
-    left: 00px;
-    top: 00px;
-    width: 150px;
-    height: 150px;
+    left: 20px;
+    top: 85px;
+    width: 200px;
+    height: 200px;
 }
 
 /* buttons styling */
-#buttons {
+#generate {
     position: absolute;
-    bottom: 50px;
+    left: 14px;
+    bottom: 90px;
+    border-radius: 50%;
+    font-size: 30px;
+    font-family: 'Courier New', Courier, monospace;
+    width: 41px;
+    height: 41px;
+    background-color: rgb(56, 56, 56);
+    color: white;
+    border: none;
+}
+
+.d-pad-buttons {
+    background-color: aqua;
+    height: 5%;
+    width: 5%;
 }
 
 #left {
     position: absolute;
     left: 203px;
-    bottom: 24px;
+    bottom: 74px;
 }
 
 #right {
     position: absolute;
-    left: 263px;
-    bottom: 24px;
+    left: 240px;
+    bottom: 74px;
 }
 
 #up {
     position: absolute;
     left: 232px;
-    bottom: 55px;
+    bottom: 105px;
 }
 
 #down {
     position: absolute;
     left: 232px;
-    top: -15px;
+    bottom: 45px;
 }
 
 /* Right side of pokedex */
@@ -127,13 +163,4 @@ h2 {
     position: absolute;
     right: 30px;
     bottom: 38px;
-}
-
-/* Pokemon cards styling */
-img {
-    align-self: center;
-    max-width: 300px;
-    max-height: 300px;
-    min-height: 300px;
-    object-fit: contain;
 }

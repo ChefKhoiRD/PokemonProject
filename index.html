@@ -26,22 +26,24 @@
 
         <!-- Left side of pokedex screen -->
         <div id="first" class="small-12 medium-6 large-6 container">
-            <!-- Data pulled from API on right side of pokedex -->
+            <!-- Data pulled from API on left side of pokedex -->
             <div id="first-text-info">
                 <p id="error"></p>
                 <img id="pokeimg" class="hide"> 
             </div>
                 <input id="generate" type="button" value="?">
             <!-- D-Pad buttons -->
-                <div id="buttons">
-                    <input id="left" type="button" value="<">
-                    <input id="right" type="button" value=">">
-                    <input id="up" type="button" value="ᐱ">
-                    <input id="down" type="button" value="ᐯ">
-                </div>  
+                <div class = "d-pad-container">
+                    <button class = "d-pad-buttons" id = "left">
+                    <button class = "d=pad-buttons" id = "right">
+                    <button class = "d-pad-buttons" id = "up">
+                    <button class = "d-pad-buttons" id = "down">
+                </div>
+            <!-- Search bar -->
                 <form>
                     <input id="search" type="text" placeholder="Search">
                 </form>
+                <p id="text"><span id="disappear">Click search to lookup a pokemon!</span></p>
         </div>
         
         <!-- Right side of pokedex screen-->
@@ -51,14 +53,17 @@
                 <h2 id="convertedWeight" maxlength="4"></h2>
                 <h2 id="convertedHeight"></h2>
                 <h2 id="poketype"></h2>
+                <h2 id="additionalPoketype"></h2>
             </div>
             <input id="togglecards" type="button" class="hide" >
         </div>
     </div>
     </div>
     </div>
+
     <!-- Show all pokemon cards -->
     <div id="cards" class="grid-x cell small-12 align-spaced hide"></div>
+
     <script
         src="https://code.jquery.com/jquery-3.6.0.js"
         integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="

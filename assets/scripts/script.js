@@ -64,6 +64,8 @@ function getPokemonCards(pokeName) {
 // function to get a pokemon's image and name and set the page with it
 function getPokemonImage(pokemon) {
     // get the pokemon's data from pokeapi.co
+    pokeImages=[];
+    imageindex=0;
     fetch(`${pokeApiCoUrl}/${pokemon}`)
         .then(function (response) {
             return response.json();
@@ -71,7 +73,10 @@ function getPokemonImage(pokemon) {
         .then(function (data) {
             // store the species name for easier usage and for special case options
             // set the h1 to the pokemon's name, capitalizing the first letter via charAt and then concatenating the rest of the name via slice, removes hide class keeping element hidden
-            $("#pokename").text(pokemonNames[pokemon - 1].charAt(0).toUpperCase() + pokemonNames[pokemon - 1].slice(1)).removeClass("hide");
+            const pokeName = pokemonNames[pokemon - 1].charAt(0).toUpperCase() + pokemonNames[pokemon - 1].slice(1);
+            $("#pokename").text(pokeName).removeClass("hide");
+            $("#search").val(pokeName);
+
             // setting pokemon weight from incorrectly inputted kilograms to lbs
             function pokemonWeight() {
                 $("#pokewei").text(data.weight);
@@ -91,14 +96,12 @@ function getPokemonImage(pokemon) {
            pokemonHeight();
 
            // getting the pokemon type from API
-          var types =  `Types: ${data.types[0].type.name}`
-          if (data.types.length > 1) {
-              types+= `, ${data.types[1].type.name}`
-          }
-            $("#poketype").text(types); 
-
-            pokeImages=[];
-            imageindex=0;
+           $("#poketype").text('Type(s):'); 
+           var types =  `${data.types[0].type.name}`
+           if (data.types.length > 1) {
+               types += `, ${data.types[1].type.name}`
+           }
+           $("#additionalPoketype").text(types);
 
             // set the img to the pokemon's sprite, removes hide class keeping element hidden
             $("#pokeimg").attr("src", data.sprites.front_default).removeClass("hide");
@@ -165,11 +168,11 @@ function trimPoke(string) {
 // audio error functions
 function cryerror() {
     // if there is an error with the audio file, notify user
-    $("#error").text("Unknown Cry").attr("style", "color: black;");
+    $("#error").text("✖").attr("style", "color: black;");
 };
 function crycanplay() {
     // set the error text to nothing because we have no error
-    $("#error").text("");
+    $("#error").text("🕪");
     // play the cry of the pokemon we're getting
     cry.play();
 };
@@ -233,23 +236,24 @@ $("#pokeimg").click(function () {
 });
 
 // d-pad functionality
-$("#buttons").click(function(event) {
-    if(event.target.value === "ᐱ") {
+$(":button").click(function(event) {
+    if(event.target.id === "up") {
         pokeIndex--;
         if(pokeIndex < 0) pokeIndex = (pokemonNames.length - 1)
         getPokemon(pokeIndex + 1)
+        console.log(event.target.id === "up");
     }
-    else if (event.target.value === "ᐯ") {
+    else if (event.target.id === "down") {
         pokeIndex++;
         if(pokeIndex > pokemonNames.length - 1) pokeIndex = (0)
         getPokemon(pokeIndex + 1)
     }
-    else if(event.target.value === "<") {
+    else if(event.target.id === "left") {
         imageindex--;
         if(imageindex < 0) imageindex = (pokeImages.length - 1)
-$("#pokeimg").attr("src", pokeImages[imageindex])
+        $("#pokeimg").attr("src", pokeImages[imageindex])
     }
-    else if (event.target.value === ">") {
+    else if (event.target.id === "right") {
         imageindex++;
         if(imageindex > pokeImages.length - 1) imageindex = (0)
         $("#pokeimg").attr("src", pokeImages[imageindex])
@@ -257,3 +261,7 @@ $("#pokeimg").attr("src", pokeImages[imageindex])
 })
 // when page loads, get all our pokemon so we can work with them
 getAllPokemon();
+
+function parameters(parameterone, perametertwo = 1) {
+    return parametertwo * parameterone;
+}
