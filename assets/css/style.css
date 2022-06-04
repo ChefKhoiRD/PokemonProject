@@ -113,6 +113,10 @@ img {
 }
 
 /* buttons styling */
+.pointer{
+    cursor: pointer;
+}
+
 #generate {
     position: absolute;
     left: 14px;

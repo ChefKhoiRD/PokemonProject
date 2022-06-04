@@ -20,7 +20,7 @@
         href="assets/css/style.css">
 </head>
 
-<body>
+<body class="callout primary">
     <!-- Giving the body a grid and a class of container -->
     <div class="grid-x container">
 
@@ -28,17 +28,17 @@
         <div id="first" class="small-12 medium-6 large-6 container">
             <!-- Data pulled from API on left side of pokedex -->
             <div id="first-text-info">
-                <p id="error"></p>
+                <p id="error" class="pointer"></p>
                 <img id="pokeimg" class="hide"> 
                 <p id="imagenum"></p>
             </div>
-                <input id="generate" type="button" value="?">
+                <input id="generate" type="button" class="pointer" value="?">
             <!-- D-Pad buttons -->
                 <div class = "d-pad-container">
-                    <button class = "d-pad-buttons" id = "left">
-                    <button class = "d-pad-buttons" id = "right">
-                    <button class = "d-pad-buttons" id = "up">
-                    <button class = "d-pad-buttons" id = "down">
+                    <button class = "d-pad-buttons pointer" id = "left">
+                    <button class = "d-pad-buttons pointer" id = "right">
+                    <button class = "d-pad-buttons pointer" id = "up">
+                    <button class = "d-pad-buttons pointer" id = "down">
                 </div>
             <!-- Search bar -->
                 <form>
