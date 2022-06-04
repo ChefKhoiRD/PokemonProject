@@ -76,7 +76,9 @@ function getPokemonImage(pokemon) {
             const pokeName = pokemonNames[pokemon - 1].charAt(0).toUpperCase() + pokemonNames[pokemon - 1].slice(1);
             $("#pokename").text(pokeName).removeClass("hide");
             $("#search").val(pokeName);
-
+            
+            
+            $("#pokenum").text("#" + data.id);
             // setting pokemon weight from incorrectly inputted kilograms to lbs
             function pokemonWeight() {
                 $("#pokewei").text(data.weight);
@@ -120,6 +122,7 @@ function getPokemon(pokemon) {
     getPokemonImage(pokemon);
     // get cards featuring the pokemon
     getPokemonCards(pokemonNames[pokemon - 1]);
+    $("#pokeimg").removeClass("zoomed");
 };
 
 // function to pass each card into generateCard
@@ -131,6 +134,7 @@ function createCards(cardsArray) {
         generateCard(cardsArray.data[card]);
     };
     console.log(pokeImages);
+    $("#imagenum").text(`${pokeImages.length} / ${imageindex + 1}`);
 };
 
 // function to generate a DOM object for a given card
@@ -160,15 +164,15 @@ function trimPoke(string) {
         string = string.replace(badWords[wordsIndex], "");
     };
     // replace -m and -m with male and female symbols
-    if (string.includes("-m")) string = string.replace("-m", " ♂");
-    if (string.includes("-f")) string = string.replace("-f", " ♀");
+    if (string.endsWith("-m")) string = string.replace("-m", " ♂");
+    if (string.endsWith("-f")) string = string.replace("-f", " ♀");
     return string;
 };
 
 // audio error functions
 function cryerror() {
     // if there is an error with the audio file, notify user
-    $("#error").text("✖").attr("style", "color: black;");
+    $("#error").text("✖")
 };
 function crycanplay() {
     // set the error text to nothing because we have no error
@@ -180,7 +184,12 @@ function crycanplay() {
 // autocomplete for search box
 $(function () {
     $('#search').autocomplete({
-        source: pokemonNames,
+        // source: pokemonNames,
+        autoFocus: true,
+        source: (request, response) => {
+            const results = $.ui.autocomplete.filter(pokemonNames, request.term);
+            response(results.slice(0,5));
+        }
     });
 });
 
@@ -231,19 +240,18 @@ $("#generate").click(function () {
 });
 
 // if there is no error for cry, then try to play it
-$("#pokeimg").click(function () {
+$("#first-text-info").click(function () {
     if (!cry.error) cry.play();
 });
 
 // d-pad functionality
 $(":button").click(function(event) {
-    if(event.target.id === "up") {
+    if(event.target.id === "down") {
         pokeIndex--;
         if(pokeIndex < 0) pokeIndex = (pokemonNames.length - 1)
         getPokemon(pokeIndex + 1)
-        console.log(event.target.id === "up");
     }
-    else if (event.target.id === "down") {
+    else if (event.target.id === "up") {
         pokeIndex++;
         if(pokeIndex > pokemonNames.length - 1) pokeIndex = (0)
         getPokemon(pokeIndex + 1)
@@ -252,16 +260,31 @@ $(":button").click(function(event) {
         imageindex--;
         if(imageindex < 0) imageindex = (pokeImages.length - 1)
         $("#pokeimg").attr("src", pokeImages[imageindex])
+        $("#imagenum").text(`${pokeImages.length} / ${imageindex + 1}`); 
+
     }
     else if (event.target.id === "right") {
         imageindex++;
         if(imageindex > pokeImages.length - 1) imageindex = (0)
         $("#pokeimg").attr("src", pokeImages[imageindex])
+        $("#imagenum").text(`${pokeImages.length} / ${imageindex + 1}`); 
+
     }
 })
+
+$("#pokeimg").click(function(event) {
+    if (imageindex != 0) {
+        if ($(event.target).hasClass("zoomed")) $(event.target).removeClass("zoomed");
+        else $(event.target).addClass("zoomed");
+    }
+})
+
+var helpdisappear = $("#text");
+    helpdisappear.hover(function(){
+    helpdisappear.attr("class", "hide")
+    }, 
+    );
+
 // when page loads, get all our pokemon so we can work with them
 getAllPokemon();
 
-function parameters(parameterone, perametertwo = 1) {
-    return parametertwo * parameterone;
-}
