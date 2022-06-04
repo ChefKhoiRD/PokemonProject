@@ -142,12 +142,12 @@ function generateCard(card) {
     // create a div to contain the card image, we know the incoming image size so we've adjusted the width/height
     var newCard = $("<div>").attr("style", "width: 255px; height: 352px; display: flex; justify-content: center; align-items: center;");
     // create an image and give it the card source, with contain to keep aspect ratio
-    var cardImg = $("<img>").attr("src", card.images.large).attr("style", "object-fit: contain;");
+    var cardImg = $("<img>").attr("src", card.images.small).attr("style", "object-fit: contain;");
     // append the card to the div
     newCard.append(cardImg);
     // append the dive to the DOM
     $("#cards").append(newCard);
-    pokeImages.push(card.images.large)
+    pokeImages.push(card.images.small)
 
 };
 
@@ -240,7 +240,7 @@ $("#generate").click(function () {
 });
 
 // if there is no error for cry, then try to play it
-$("#first-text-info").click(function () {
+$("#error").click(function () {
     if (!cry.error) cry.play();
 });
 
@@ -268,7 +268,6 @@ $(":button").click(function(event) {
         if(imageindex > pokeImages.length - 1) imageindex = (0)
         $("#pokeimg").attr("src", pokeImages[imageindex])
         $("#imagenum").text(`${pokeImages.length} / ${imageindex + 1}`); 
-
     }
 })
 
