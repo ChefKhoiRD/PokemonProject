@@ -1,3 +1,36 @@
+/*
+allPokemon[n] = {
+    name: Pokemon,
+    cards: {
+        data: [
+            {
+                images: {
+                    large: hi-res link,
+                    small: lower-res link
+                }
+            }
+        ]
+    },
+    info: {
+        weight: weight in .kilo,
+        height: height in .meters,
+        types: [1-2 types],
+        sprites: {
+            front_default
+        }
+    }
+}
+example: allPokemon[0].cards.data[2].images.small links to a lower resolution image of a Bulbasaur card
+*/
+/*
+allPokemon[n] = {
+    name: Pokemon,
+    images: [images] 0 = front_default rest = cards,
+    weight: weight in .kilo,
+    height: height in .meters
+}
+
+*/
 // variables for URLs we're grabbing data from
 var pokeApiCoUrl = 'https://pokeapi.co/api/v2/pokemon';
 var pokeTcgApiUrl = 'https://api.pokemontcg.io/v2/cards/';
@@ -7,8 +40,9 @@ var imageindex = 0;
 var pokeImages = [];
 
 var storedPokemon = JSON.parse(localStorage.getItem("allPokemon"));
-if(!storedPokemon) var allPokemon = [];
-else var allPokemon = storedPokemon;
+var allPokemon = [];
+if(!storedPokemon) getAllPokemon();
+else allPokemon = storedPokemon;
 
 
 var pokeImagesAll = [];
@@ -39,9 +73,17 @@ async function getAllPokemon() {
             tempPoke.name = trimPoke(data.results[i].name.charAt(0).toUpperCase() + data.results[i].name.slice(1));
             tempPoke.info = await getPokeInfo(i);
             tempPoke.cards = await getPokeCards(tempPoke.name);
+            tempPoke.images = [];
+            tempPoke.images[0] = tempPoke.info.sprites.front_default;
+            for(cards = 0; cards < tempPoke.cards.data.length; cards++) {
+                tempPoke.images.push(tempPoke.cards.data[cards].images.small);
+            }
+            tempPoke.height = tempPoke.info.height;
+            tempPoke.weight = tempPoke.info.weight;
             allPokemon[i] = tempPoke;
         };
     };
+    console.log(allPokemon)
     localStorage.setItem("allPokemon", JSON.stringify(allPokemon));
     // unhide content after we get all our pokemon
     $("body").removeClass("hide");
@@ -57,7 +99,7 @@ async function getPokeCards(pokeName) {
     return data;
 }
 console.log(allPokemon)
-//getAllPokemon();
+getAllPokemon();
 
 async function getPokeInfo(pokeNum) {
     // offset by 1 because index is 0 but pokemon start a 1
