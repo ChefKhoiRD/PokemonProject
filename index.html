@@ -5,19 +5,15 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" 
-        href="assets/css/normalize.css">
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.4/dist/css/foundation.min.css"
-        integrity="sha384-amcVvNHXnWYXZUrDw6vvXDHGauVAtED5XPLIkmSOO0n83xuXntAlc8fBQkjizLt5"
-        crossorigin="anonymous">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200&family=Press+Start+2P&display=swap" rel="stylesheet">
-    <link rel="stylesheet" 
-        href="assets/css/jquery-ui.css">
-    <link rel="stylesheet" 
-        href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/normalize.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.4/dist/css/foundation.min.css"
+        integrity="sha384-amcVvNHXnWYXZUrDw6vvXDHGauVAtED5XPLIkmSOO0n83xuXntAlc8fBQkjizLt5" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200&family=Press+Start+2P&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/jquery-ui.css">
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
 <body class="callout primary hide">
@@ -30,29 +26,29 @@
             <!-- Data pulled from API on left side of pokedex -->
             <div id="first-text-info">
                 <p id="error" class="pointer"></p>
-                <img id="pokeimg" class="hide"> 
+                <img id="pokeimg" class="hide">
                 <p id="imagenum"></p>
             </div>
-                <input id="generate" type="button" class="pointer" value="?">
+            <input id="generate" type="button" class="pointer" value="?">
             <!-- D-Pad buttons -->
-                <div class = "d-pad-container">
-                    <button class = "d-pad-buttons pointer" id = "left">
-                    <button class = "d-pad-buttons pointer" id = "right">
-                    <button class = "d-pad-buttons pointer" id = "up">
-                    <button class = "d-pad-buttons pointer" id = "down">
-                </div>
+            <div class="d-pad-container">
+                <button class="d-pad-buttons pointer" id="left"></button>
+                <button class="d-pad-buttons pointer" id="right"></button>
+                <button class="d-pad-buttons pointer" id="up"></button>
+                <button class="d-pad-buttons pointer" id="down"></button>
+            </div>
             <!-- Search bar -->
-                <form>
-                    <input id="search" type="text" placeholder="Search" maxlength="12">
-                </form>
-                <p id="text"><span id="disappear">Click search to lookup a pokemon!</span></p>
+            <form>
+                <input id="search" type="text" placeholder="Search" maxlength="12">
+            </form>
+            <p id="text"><span id="disappear">Click search to lookup a pokemon!</span></p>
         </div>
-        
+
         <!-- Right side of pokedex screen-->
         <div id="second" class="small-12 medium-6 large-6 container">
             <div id="second-text-info">
-                <div id = "pokeinfo">
-                <span id="pokename"></span><span id="pokenum"></span>
+                <div id="pokeinfo">
+                    <span id="pokename"></span><span id="pokenum"></span>
                 </div>
                 <h2 id="convertedWeight" maxlength="4"></h2>
                 <h2 id="convertedHeight"></h2>
@@ -62,26 +58,18 @@
 
         </div>
     </div>
-    </div>
-    </div>
 
     <!-- Show all pokemon cards -->
     <div id="cards" class="grid-x cell small-12 align-spaced hide"></div>
 
-    <script
-        src="https://code.jquery.com/jquery-3.6.0.js"
-        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
-        crossorigin="anonymous"></script>
-    <script
-        src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"
-        integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY="
-        crossorigin="anonymous"></script>
-    <script
-        src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"
+        integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
         crossorigin="anonymous"></script>
-    <script
-        src="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.4/dist/js/foundation.min.js"
+    <script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.4/dist/js/foundation.min.js"
         integrity="sha384-hSrFuHFG94AMvSngvj7veESymunHuxMiX0gZpmZcsns3RjOe31ZUrmJBehnXwF+R"
         crossorigin="anonymous"></script>
     <script src="./assets/scripts/script.js"></script>

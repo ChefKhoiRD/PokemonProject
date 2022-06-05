@@ -96,6 +96,8 @@ function setPokemon(pokemonNum) {
     pokeIndex = pokemonNum;
     // make sure to reset the zoom when pokemon is changed
     $("#pokeimg").removeClass("zoomed");
+    // remove pointer class so it doesn't have false pointer indicator if user was looking at a card
+    $("#pokeimg").removeClass("pointer");
     // set up the pokemon's cry (offset by one because of how it is hosted), image, name, types, height/weight
     setPokemonCry(pokemonNum + 1);
     setPokemonImage(pokemonNum);
@@ -285,6 +287,9 @@ $(":button").click(function (event) {
         // set the image we're looking at and set the text denoting which image out of how many
         $("#pokeimg").attr("src", allPokemon[pokeIndex].images[imageIndex]);
         $("#imagenum").text(`${allPokemon[pokeIndex].images.length} / ${imageIndex + 1}`);
+        // if user is looking at base image, remove the pointer class, otherwise add it
+        if (imageIndex == 0) $("#pokeimg").removeClass("pointer");
+        else $("#pokeimg").addClass("pointer");
     }
     // if the user clicks the right button
     else if (event.target.id === "right") {
@@ -295,19 +300,38 @@ $(":button").click(function (event) {
         // set the image we're looking at and set the text denoting which image out of how many
         $("#pokeimg").attr("src", allPokemon[pokeIndex].images[imageIndex]);
         $("#imagenum").text(`${allPokemon[pokeIndex].images.length} / ${imageIndex + 1}`);
+        // if user is looking at base image, remove the pointer class, otherwise add it
+        if (imageIndex == 0) $("#pokeimg").removeClass("pointer");
+        else $("#pokeimg").addClass("pointer");
     };
 });
 
 // allow the user to click on a card to make it larger/smaller
 $("#pokeimg").click(function (event) {
+    modalToggle(event);
+});
+
+
+function modalToggle(event) {
     // we don't want to grow our base pokemon image so we only do anything if the imageIndex is 0, which corresponds to the base image
     if (imageIndex != 0) {
-        // if the event.target (card) has the zoomed class, remove it
-        if ($(event.target).hasClass("zoomed")) $(event.target).removeClass("zoomed");
-        // otherwise, add it
-        else $(event.target).addClass("zoomed");
+        // if the we're already zoomed in with the modal background, go back
+        if ($("#pokeimg").hasClass("zoomed") || $(event.target).hasClass("modal")) {
+            $("#pokeimg").removeClass("zoomed");
+            $(".modal").remove();
+        }
+        // otherwise, zoom in with modal background 
+        else {
+            $(event.target).addClass("zoomed pointer");
+            $("body").before($("<div>").addClass("modal pointer"));
+        };
     };
-});
+    // add event listener so we can click the modal to go back
+    $(".modal").click(function(event) {
+        modalToggle(event);
+    });
+
+}
 
 // user hint that goes away when scrolled over
 var helpdisappear = $("#text");
