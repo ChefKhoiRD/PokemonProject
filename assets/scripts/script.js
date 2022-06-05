@@ -99,6 +99,9 @@ function setPokemon(pokemonNum) {
     // remove pointer class so it doesn't have false pointer indicator if user was looking at a card
     $("#pokeimg").removeClass("pointer");
     // set up the pokemon's cry (offset by one because of how it is hosted), image, name, types, height/weight
+    console.log(allPokemon[pokemonNum].name)
+    $("#search").val(allPokemon[pokemonNum].name);
+    $("#pokenum").text(`# ${pokemonNum + 1}`);
     setPokemonCry(pokemonNum + 1);
     setPokemonImage(pokemonNum);
     setPokemonName(pokemonNum);
@@ -220,7 +223,6 @@ function autoComplete() {
 
 // when user submits a pokemon to the input, if their input is invalid, tell them, if their input is valid, work with it to get the right pokemon, sound and cards
 $("form").submit(function (event) {
-    console.log(event)
     // preventDefault so we don't reload page
     event.preventDefault();
     // remove any existing warning if it exists
@@ -239,6 +241,14 @@ $("form").submit(function (event) {
             isError = false;
         };
     };
+    // if no match by text, try by number
+    // if searched isn't above allPokemon.length and is positive
+    if (searched <= allPokemon.length && searched > 0) {
+        // setPokemon with the number given
+        setPokemon(searched - 1);
+        // set boolean to false so we don't get our error
+        isError = false;
+    }
     // if a matching pokemon isn't found, show the error along with what the user searched
     if (isError) {
         $("#text").addClass("hide");
