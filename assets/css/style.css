@@ -96,6 +96,7 @@ img {
     top: 85px;
     width: 200px;
     height: 200px;
+    border: none;
 }
 
 .zoomed {
