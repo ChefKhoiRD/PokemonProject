@@ -98,10 +98,11 @@ function setPokemon(pokemonNum) {
     $("#pokeimg").removeClass("zoomed");
     // remove pointer class so it doesn't have false pointer indicator if user was looking at a card
     $("#pokeimg").removeClass("pointer");
-    // set up the pokemon's cry (offset by one because of how it is hosted), image, name, types, height/weight
-    console.log(allPokemon[pokemonNum].name)
-    $("#search").val(allPokemon[pokemonNum].name);
+    // set up pokedex # on page
     $("#pokenum").text(`# ${pokemonNum + 1}`);
+    // searched pokemon goes in the search bar
+    $("#search").val(allPokemon[pokemonNum].name);
+    // set up the pokemon's cry (offset by one because of how it is hosted), image, name, types, height/weight
     setPokemonCry(pokemonNum + 1);
     setPokemonImage(pokemonNum);
     setPokemonName(pokemonNum);
