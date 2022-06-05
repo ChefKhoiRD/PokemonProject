@@ -218,6 +218,7 @@ function autoComplete() {
 
 // when user submits a pokemon to the input, if their input is invalid, tell them, if their input is valid, work with it to get the right pokemon, sound and cards
 $("form").submit(function (event) {
+    console.log(event)
     // preventDefault so we don't reload page
     event.preventDefault();
     // remove any existing warning if it exists
@@ -238,8 +239,9 @@ $("form").submit(function (event) {
     };
     // if a matching pokemon isn't found, show the error along with what the user searched
     if (isError) {
-        var warning = $("<h6>").text(`'${$(event.target)[0][0].value}' could not be found.`).attr("style", "color: red;").attr("id", "warning");
-        $("form").after(warning);
+        $("#text").addClass("hide");
+        var warning = $("<h6>").text(`'${$(event.target)[0][0].value}' could not be found.`).attr("style", "color: white; position: absolute; bottom: 0px; left: 15px;").attr("id", "warning");
+        $("#first").append(warning);
     };
 });
 
