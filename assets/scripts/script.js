@@ -32,35 +32,28 @@ allPokemon[n] = {
 
 */
 // variables for URLs we're grabbing data from
-localStorage.clear();
 var pokeApiCoUrl = 'https://pokeapi.co/api/v2/pokemon';
 var pokeTcgApiUrl = 'https://api.pokemontcg.io/v2/cards/';
 var cryUrl = 'https://veekun.com/dex/media/pokemon/cries/';
 var pokeIndex = 0;
 var imageIndex = 0;
 var pokeImages = [];
-
 var storedPokemon = JSON.parse(localStorage.getItem("allPokemon"));
 var allPokemon = [];
-if(!storedPokemon) getAllPokemon();
-else {
-    allPokemon = storedPokemon;
-    // unhide content since we have saved pokemon
-    $("body").removeClass("hide");
-}
-
 var pokeImagesAll = [];
 var pokeImagesStored = JSON.parse(localStorage.getItem("pokeImages"))
 // initializing variables we work with later
 var cry;                                                    // variable we store audio in for the selected pokemon's cry
 var pokemonNames = [];
 var storedPokemonNames = JSON.parse(localStorage.getItem("pokemonNames"));    // variable we store all pokemon names in, array allows us to also use its index as a way to reference them by pokedex #
-
+if(storedPokemon) allPokemon = storedPokemon;
+var preloaded = allPokemon.length;
+getAllPokemon();
 // get all the pokemon and related info from the APIs
 async function getAllPokemon() {
     const fetcher = await fetch(`${pokeApiCoUrl}?limit=10000`)
     const data = await fetcher.json();
-    for (let i = 0; i < 6; i++) {
+    for (let i = preloaded; i < data.results.length; i++) {
         let tempPoke = {}
         // trim off the URL from the pokemon #
         var urlPokeNum = getDataNumber(data.results[i].url);
@@ -70,40 +63,38 @@ async function getAllPokemon() {
         }
         else {
             tempPoke.name = trimPoke(data.results[i].name.charAt(0).toUpperCase() + data.results[i].name.slice(1));
-            tempPoke.info = await getPokeInfo(i);
-            tempPoke.cards = await getPokeCards(tempPoke.name);
             tempPoke.images = [];
-            tempPoke.images[0] = tempPoke.info.sprites.front_default;
-            for(cards = 0; cards < tempPoke.cards.data.length; cards++) {
-                tempPoke.images.push(tempPoke.cards.data[cards].images.small);
-            }
-            tempPoke.height = tempPoke.info.height;
-            tempPoke.weight = tempPoke.info.weight;
-            tempPoke.types = tempPoke.info.types;
+            await getPokeInfo(tempPoke, i);
+            await getPokeCards(tempPoke, tempPoke.name);
             allPokemon[i] = tempPoke;
+            localStorage.setItem("allPokemon", JSON.stringify(allPokemon));
         };
     };
     // after we get all the pokemon objects into an array, store that in localStorage
-    localStorage.setItem("allPokemon", JSON.stringify(allPokemon));
     // unhide content after we get all our pokemon
     $("body").removeClass("hide");
 };
 
-async function getPokeCards(pokeName) {
+async function getPokeCards(tempObj, pokeName) {
     const fetcher = await fetch(`${pokeTcgApiUrl}?q=name:%22${pokeName}%22`, {
         headers: {
             XApiKey: '6f0066f9-4a35-4bc2-9d6e-cfe8c5948200'
         }
     });
     const data = await fetcher.json();
-    return data;
+    for(cards = 0; cards < data.data.length; cards++) {
+        tempObj.images.push(data.data[cards].images.small);
+    }
 }
 
-async function getPokeInfo(pokeNum) {
+async function getPokeInfo(tempObj, pokeNum) {
     // offset by 1 because index is 0 but pokemon start a 1
     const fetcher = await fetch(`${pokeApiCoUrl}/${pokeNum + 1}`);
     const data = await fetcher.json();
-    return data;
+    tempObj.height = data.height
+    tempObj.weight = data.weight;
+    tempObj.types = data.types;
+    tempObj.images[0] = data.sprites.front_default;
 };
 
 async function getACard(pokeName) {
@@ -182,7 +173,6 @@ function setPokemonHeightWeight(pokemonNum) {
 
 function setPokemonTypes(pokemonNum) {
     $("#poketype").text('Type(s):');
-    console.log(allPokemon[pokemonNum].types)
     var typesString = allPokemon[pokemonNum].types[0].type.name;
     if(allPokemon[pokemonNum].types.length > 1) {
         for(types = 1; types < allPokemon[pokemonNum].types.length; types++) {
@@ -244,7 +234,6 @@ $(function () {
     var pokemonNames = [];
     for (names = 0; names < allPokemon.length; names++) {
         pokemonNames.push(allPokemon[names].name)
-        console.log(pokemonNames)
     }
     $('#search').autocomplete({
         autoFocus: true,
@@ -265,9 +254,9 @@ $("form").submit(function (event) {
     var isError = true;
     // assign the searched text to a variable for readable usage
     searched = $(event.target)[0][0].value;
-    // iterate through the pokemonNames array
+    // iterate through the allPokemon array
     for (poke = 0; poke < allPokemon.length; poke++) {
-        // if the looked at pokemonNames is what was searched
+        // if the looked at allPokemon is what was searched
         if (allPokemon[poke].name.toUpperCase() == searched.toUpperCase()) {
             // getPokemon with the index + 1 (array is offset from dex by 1)
             setPokemon((poke));
