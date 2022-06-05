@@ -32,32 +32,31 @@ allPokemon[n] = {
 
 */
 // variables for URLs we're grabbing data from
+localStorage.clear();
 var pokeApiCoUrl = 'https://pokeapi.co/api/v2/pokemon';
 var pokeTcgApiUrl = 'https://api.pokemontcg.io/v2/cards/';
 var cryUrl = 'https://veekun.com/dex/media/pokemon/cries/';
 var pokeIndex = 0;
-var imageindex = 0;
+var imageIndex = 0;
 var pokeImages = [];
 
 var storedPokemon = JSON.parse(localStorage.getItem("allPokemon"));
 var allPokemon = [];
 if(!storedPokemon) getAllPokemon();
-else allPokemon = storedPokemon;
-
+else {
+    allPokemon = storedPokemon;
+    // unhide content since we have saved pokemon
+    $("body").removeClass("hide");
+}
 
 var pokeImagesAll = [];
 var pokeImagesStored = JSON.parse(localStorage.getItem("pokeImages"))
-//if(!pokeImagesStored) getAllCards();
-//else pokeImagesAll = pokeImagesStored;
 // initializing variables we work with later
 var cry;                                                    // variable we store audio in for the selected pokemon's cry
 var pokemonNames = [];
 var storedPokemonNames = JSON.parse(localStorage.getItem("pokemonNames"));    // variable we store all pokemon names in, array allows us to also use its index as a way to reference them by pokedex #
-// when page loads, get all our pokemon so we can work with them
-//if (!storedPokemonNames) getAllPokemon();
-//else pokemonNames = storedPokemonNames;
-// get all the pokemon from the API
 
+// get all the pokemon and related info from the APIs
 async function getAllPokemon() {
     const fetcher = await fetch(`${pokeApiCoUrl}?limit=10000`)
     const data = await fetcher.json();
@@ -80,10 +79,11 @@ async function getAllPokemon() {
             }
             tempPoke.height = tempPoke.info.height;
             tempPoke.weight = tempPoke.info.weight;
+            tempPoke.types = tempPoke.info.types;
             allPokemon[i] = tempPoke;
         };
     };
-    console.log(allPokemon)
+    // after we get all the pokemon objects into an array, store that in localStorage
     localStorage.setItem("allPokemon", JSON.stringify(allPokemon));
     // unhide content after we get all our pokemon
     $("body").removeClass("hide");
@@ -98,8 +98,6 @@ async function getPokeCards(pokeName) {
     const data = await fetcher.json();
     return data;
 }
-console.log(allPokemon)
-getAllPokemon();
 
 async function getPokeInfo(pokeNum) {
     // offset by 1 because index is 0 but pokemon start a 1
@@ -108,40 +106,6 @@ async function getPokeInfo(pokeNum) {
     return data;
 };
 
-// function to get a pokemon's image and name and set the page with it
-function getPokemonImage(pokemon) {
-    // get the pokemon's data from pokeapi.co
-    pokeImages = [];
-    imageindex = 0;
-    fetch(`${pokeApiCoUrl}/${pokemon}`)
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (data) {
-            // store the species name for easier usage and for special case options
-            // set the h1 to the pokemon's name, capitalizing the first letter via charAt and then concatenating the rest of the name via slice, removes hide class keeping element hidden
-            const pokeName = pokemonNames[pokemon - 1].charAt(0).toUpperCase() + pokemonNames[pokemon - 1].slice(1);
-            $("#pokename").text(pokeName).removeClass("hide");
-            $("#search").val(pokeName);
-
-
-            $("#pokenum").text("#" + data.id);
-            pokemonWeight();
-            pokemonHeight();
-
-            // getting the pokemon type from API
-            $("#poketype").text('Type(s):');
-            var types = `${data.types[0].type.name}`
-            if (data.types.length > 1) {
-                types += `, ${data.types[1].type.name}`
-            }
-            $("#additionalPoketype").text(types);
-
-            // set the img to the pokemon's sprite, removes hide class keeping element hidden
-            $("#pokeimg").attr("src", data.sprites.front_default).removeClass("hide");
-            pokeImages.push(data.sprites.front_default);
-        });
-};
 async function getACard(pokeName) {
     const pokemon = [];
     const fetcher = await fetch(`${pokeTcgApiUrl}?q=name:%22${pokeName}%22`, {
@@ -155,26 +119,8 @@ async function getACard(pokeName) {
     }
     return pokemon;
 };
-
-// setting converted pokemon height
-function pokemonHeight() {
-    $("#pokehei").text(data.height);
-    var convertedHeight = Math.ceil(data.height * 3.93701);
-    var inches = convertedHeight % 12;
-    var feet = Math.floor(convertedHeight / 12);
-    document.getElementById("convertedHeight").textContent = "Height: " + feet + "\'" + inches + "\"";
-}
-
-// setting pokemon weight from incorrectly inputted kilograms to lbs
-function pokemonWeight() {
-    $("#pokewei").text(data.weight);
-    var convertedWeight = Math.ceil(data.weight * 0.22);
-    document.getElementById("convertedWeight").textContent = "Weight: " + convertedWeight + " lbs";
-
-}
-
 // function to get a pokemon's cry
-function getPokemonCry(pokemon) {
+function setPokemonCry(pokemon) {
     // create a cry audio object using our resource and the random pokemon
     cry = new Audio(`${cryUrl}${pokemon}.ogg`);
     // lower volume because this stuff really blasts your ears
@@ -182,10 +128,9 @@ function getPokemonCry(pokemon) {
     // set up audio properties we use
     cry.onerror = cryerror;
     cry.oncanplay = crycanplay;
-}
+};
 
 async function getAllCards() {
-    console.log("Running getAllCards()")
     for (let pokemon = 0; pokemon < 25; pokemon++) {
         pokeImagesAll.push(
             await getACard(pokemonNames[pokemon])
@@ -207,61 +152,61 @@ async function getACard(pokeName) {
     }
     return pokemon;
 };
-// function to get a pokemon's card
-function getPokemonCards(pokeName) {
-    // fetch cards based off generated pokemon's name, using replace to change any - to * to work better with the pokemontcg.io api, removing the f and m for nidorans
-    fetch(`${pokeTcgApiUrl}?q=name:%22${pokeName.replace("-", "*")}%22`, {
-        headers: {
-            XApiKey: '6f0066f9-4a35-4bc2-9d6e-cfe8c5948200'
-        }
-    })
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (data) {
-            createCards(data);
-        });
+
+// controlling function to set up a pokemon on the page
+function setPokemon(pokemonNum) {
+    pokeIndex = pokemonNum - 1;
+    setPokemonCry(pokemonNum + 1);
+    setPokemonImage(pokemonNum);
+    setPokemonName(pokemonNum);
+    setPokemonTypes(pokemonNum);
+    setPokemonHeightWeight(pokemonNum)
+    $("#pokeimg").removeClass("zoomed");
+    $("#imagenum").text(`${allPokemon[pokeIndex + 1].images.length} / ${imageIndex + 1}`);
+};
+
+function setPokemonImage(pokemonNum) {
+    pokeImages = [];
+    imageIndex = 0;
+    $("#pokeimg").attr("src", allPokemon[pokemonNum].images[imageIndex]).removeClass("hide");
+};
+
+function setPokemonName(pokemonNum) {
+    $("#pokename").text(allPokemon[pokemonNum].name).removeClass("hide");
+};
+
+function setPokemonHeightWeight(pokemonNum) {
+    pokemonHeight(allPokemon[pokemonNum])
+    pokemonWeight(allPokemon[pokemonNum])
 }
 
-
-// function to get a pokemon + cry + cards
-function getPokemon(pokemon) {
-    pokeIndex = pokemon - 1;
-    // show the togglecards button
-    $("#togglecards").removeClass("hide");
-    // get the pokemon's cry
-    getPokemonCry(pokemon);
-    // get the pokemon's image/name
-    getPokemonImage(pokemon);
-    // get cards featuring the pokemon
-    getPokemonCards(pokemonNames[pokemon - 1]);
-    $("#pokeimg").removeClass("zoomed");
+function setPokemonTypes(pokemonNum) {
+    $("#poketype").text('Type(s):');
+    console.log(allPokemon[pokemonNum].types)
+    var typesString = allPokemon[pokemonNum].types[0].type.name;
+    if(allPokemon[pokemonNum].types.length > 1) {
+        for(types = 1; types < allPokemon[pokemonNum].types.length; types++) {
+            typesString += `, ${allPokemon[pokemonNum].types[types].type.name}`
+        }
+    }
+    $("#additionalPoketype").text(typesString);
 };
 
-// function to pass each card into generateCard
-function createCards(cardsArray) {
-    // remove any cards already on the page
-    $("#cards").children().remove();
-    // loop through the cardsArray and generate a card DOM object for each entry, special cases for any cards that don't play nice, default for the rest
-    for (card = 0; card < cardsArray.data.length; card++) {
-        generateCard(cardsArray.data[card]);
-    };
-    $("#imagenum").text(`${pokeImages.length} / ${imageindex + 1}`);
-};
+// setting converted pokemon height
+function pokemonHeight(data) {
+    $("#pokehei").text(data.height);
+    var convertedHeight = Math.ceil(data.height * 3.93701);
+    var inches = convertedHeight % 12;
+    var feet = Math.floor(convertedHeight / 12);
+    document.getElementById("convertedHeight").textContent = "Height: " + feet + "\'" + inches + "\"";
+}
 
-// function to generate a DOM object for a given card
-function generateCard(card) {
-    // create a div to contain the card image, we know the incoming image size so we've adjusted the width/height
-    var newCard = $("<div>").attr("style", "width: 255px; height: 352px; display: flex; justify-content: center; align-items: center;");
-    // create an image and give it the card source, with contain to keep aspect ratio
-    var cardImg = $("<img>").attr("src", card.images.small).attr("style", "object-fit: contain;");
-    // append the card to the div
-    newCard.append(cardImg);
-    // append the dive to the DOM
-    $("#cards").append(newCard);
-    pokeImages.push(card.images.small)
-
-};
+// setting pokemon weight from incorrectly inputted kilograms to lbs
+function pokemonWeight(data) {
+    $("#pokewei").text(data.weight);
+    var convertedWeight = Math.ceil(data.weight * 0.22);
+    document.getElementById("convertedWeight").textContent = "Weight: " + convertedWeight + " lbs";
+}
 
 // function to filter out everything from the URL besides the pokemon number
 function getDataNumber(data) {
@@ -275,7 +220,7 @@ function trimPoke(string) {
     for (wordsIndex = 0; wordsIndex < badWords.length; wordsIndex++) {
         string = string.replace(badWords[wordsIndex], "");
     };
-    // replace -m and -m with male and female symbols
+    // replace -m and -f with male and female symbols
     if (string.endsWith("-m")) string = string.replace("-m", " ♂");
     if (string.endsWith("-f")) string = string.replace("-f", " ♀");
     return string;
@@ -286,6 +231,7 @@ function cryerror() {
     // if there is an error with the audio file, notify user
     $("#error").text("✖")
 };
+
 function crycanplay() {
     // set the error text to nothing because we have no error
     $("#error").text("🕪");
@@ -295,8 +241,12 @@ function crycanplay() {
 
 // autocomplete for search box
 $(function () {
+    var pokemonNames = [];
+    for (names = 0; names < allPokemon.length; names++) {
+        pokemonNames.push(allPokemon[names].name)
+        console.log(pokemonNames)
+    }
     $('#search').autocomplete({
-        // source: pokemonNames,
         autoFocus: true,
         source: (request, response) => {
             const results = $.ui.autocomplete.filter(pokemonNames, request.term);
@@ -316,11 +266,11 @@ $("form").submit(function (event) {
     // assign the searched text to a variable for readable usage
     searched = $(event.target)[0][0].value;
     // iterate through the pokemonNames array
-    for (poke = 0; poke < pokemonNames.length; poke++) {
+    for (poke = 0; poke < allPokemon.length; poke++) {
         // if the looked at pokemonNames is what was searched
-        if (pokemonNames[poke].toUpperCase() == searched.toUpperCase()) {
+        if (allPokemon[poke].name.toUpperCase() == searched.toUpperCase()) {
             // getPokemon with the index + 1 (array is offset from dex by 1)
-            getPokemon((poke + 1));
+            setPokemon((poke));
             // if a matching pokemon is found, set the boolean to false so we don't get our error
             isError = false;
         };
@@ -332,23 +282,10 @@ $("form").submit(function (event) {
     }
 });
 
-// events for the toggle cards button
-$("#togglecards").click(function () {
-    // do what the button says and change the button to the other state
-    if ($("#togglecards").val() === "Show Cards") {
-        $("#togglecards").val("Hide Cards");
-        $("#cards").removeClass("hide");
-    }
-    else if ($("#togglecards").val() === "Hide Cards") {
-        $("#togglecards").val("Show Cards");
-        $("#cards").addClass("hide");
-    };
-});
-
-// generate a random number with the length of pokemonNames array and use it to call getPokemon
+// generate a random number with the length of allPokemon array and use it to call setPokemon
 $("#generate").click(function () {
-    var random = Math.floor(Math.random() * pokemonNames.length);
-    getPokemon(random);
+    var random = Math.floor(Math.random() * allPokemon.length);
+    setPokemon(random);
 });
 
 // if there is no error for cry, then try to play it
@@ -360,31 +297,31 @@ $("#error").click(function () {
 $(":button").click(function (event) {
     if (event.target.id === "down") {
         pokeIndex--;
-        if (pokeIndex < 0) pokeIndex = (pokemonNames.length - 1)
-        getPokemon(pokeIndex + 1)
+        if (pokeIndex < 0) pokeIndex = (allPokemon.length - 1)
+        setPokemon(pokeIndex + 1)
     }
     else if (event.target.id === "up") {
         pokeIndex++;
-        if (pokeIndex > pokemonNames.length - 1) pokeIndex = (0)
-        getPokemon(pokeIndex + 1)
+        if (pokeIndex > allPokemon.length - 1) pokeIndex = (0)
+        setPokemon(pokeIndex + 1)
     }
     else if (event.target.id === "left") {
-        imageindex--;
-        if (imageindex < 0) imageindex = (pokeImages.length - 1)
-        $("#pokeimg").attr("src", pokeImages[imageindex])
-        $("#imagenum").text(`${pokeImages.length} / ${imageindex + 1}`);
+        imageIndex--;
+        if (imageIndex < 0) imageIndex = (allPokemon[pokeIndex + 1].images.length - 1)
+        $("#pokeimg").attr("src", allPokemon[pokeIndex + 1].images[imageIndex])
+        $("#imagenum").text(`${allPokemon[pokeIndex + 1].images.length} / ${imageIndex + 1}`);
 
     }
     else if (event.target.id === "right") {
-        imageindex++;
-        if (imageindex > pokeImages.length - 1) imageindex = (0)
-        $("#pokeimg").attr("src", pokeImages[imageindex])
-        $("#imagenum").text(`${pokeImages.length} / ${imageindex + 1}`);
+        imageIndex++;
+        if (imageIndex > allPokemon[pokeIndex + 1].images.length - 1) imageIndex = (0)
+        $("#pokeimg").attr("src", allPokemon[pokeIndex + 1].images[imageIndex])
+        $("#imagenum").text(`${allPokemon[pokeIndex + 1].images.length} / ${imageIndex + 1}`);
     }
 })
 
 $("#pokeimg").click(function (event) {
-    if (imageindex != 0) {
+    if (imageIndex != 0) {
         if ($(event.target).hasClass("zoomed")) $(event.target).removeClass("zoomed");
         else $(event.target).addClass("zoomed");
     }
