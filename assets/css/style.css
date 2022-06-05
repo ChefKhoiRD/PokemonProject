@@ -198,3 +198,10 @@ img {
     justify-content: space-between;
     font-size: 8px;
 }
+
+#loading{
+    position: absolute;
+    top: -16px;
+    left: -1px;
+    transform: scale(.85, .75);
+}

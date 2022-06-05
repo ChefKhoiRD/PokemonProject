@@ -49,6 +49,7 @@ var storedPokemonNames = JSON.parse(localStorage.getItem("pokemonNames"));    //
 if(storedPokemon) allPokemon = storedPokemon;
 var preloaded = allPokemon.length;
 getAllPokemon();
+autoComplete();
 // get all the pokemon and related info from the APIs
 async function getAllPokemon() {
     const fetcher = await fetch(`${pokeApiCoUrl}?limit=10000`)
@@ -62,23 +63,30 @@ async function getAllPokemon() {
             i = data.results.length;
         }
         else {
-            tempPoke.name = trimPoke(data.results[i].name.charAt(0).toUpperCase() + data.results[i].name.slice(1));
-            tempPoke.images = [];
-            await getPokeInfo(tempPoke, i);
-            await getPokeCards(tempPoke, tempPoke.name);
-            allPokemon[i] = tempPoke;
-            localStorage.setItem("allPokemon", JSON.stringify(allPokemon));
+            if(!allPokemon[i]) {
+                await setPokeObj(tempPoke, data, i)
+                autoComplete();
+            }
         };
     };
     // after we get all the pokemon objects into an array, store that in localStorage
     // unhide content after we get all our pokemon
-    $("body").removeClass("hide");
+    $("#loading").addClass("hide");
 };
+
+async function setPokeObj(tempPoke, data, i) {
+    tempPoke.name = trimPoke(data.results[i].name.charAt(0).toUpperCase() + data.results[i].name.slice(1));
+    tempPoke.images = [];
+    await getPokeInfo(tempPoke, i);
+    await getPokeCards(tempPoke, tempPoke.name);
+    allPokemon[i] = tempPoke;
+    localStorage.setItem("allPokemon", JSON.stringify(allPokemon));
+}
 
 async function getPokeCards(tempObj, pokeName) {
     const fetcher = await fetch(`${pokeTcgApiUrl}?q=name:%22${pokeName}%22`, {
         headers: {
-            XApiKey: '6f0066f9-4a35-4bc2-9d6e-cfe8c5948200'
+            'X-Api-Key': '6f0066f9-4a35-4bc2-9d6e-cfe8c5948200'
         }
     });
     const data = await fetcher.json();
@@ -146,14 +154,13 @@ async function getACard(pokeName) {
 
 // controlling function to set up a pokemon on the page
 function setPokemon(pokemonNum) {
-    pokeIndex = pokemonNum - 1;
     setPokemonCry(pokemonNum + 1);
     setPokemonImage(pokemonNum);
     setPokemonName(pokemonNum);
     setPokemonTypes(pokemonNum);
     setPokemonHeightWeight(pokemonNum)
     $("#pokeimg").removeClass("zoomed");
-    $("#imagenum").text(`${allPokemon[pokeIndex + 1].images.length} / ${imageIndex + 1}`);
+    $("#imagenum").text(`${allPokemon[pokeIndex].images.length} / ${imageIndex + 1}`);
 };
 
 function setPokemonImage(pokemonNum) {
@@ -230,7 +237,7 @@ function crycanplay() {
 };
 
 // autocomplete for search box
-$(function () {
+function autoComplete() {
     var pokemonNames = [];
     for (names = 0; names < allPokemon.length; names++) {
         pokemonNames.push(allPokemon[names].name)
@@ -242,7 +249,7 @@ $(function () {
             response(results.slice(0, 5));
         }
     });
-});
+};
 
 // when user submits a pokemon to the input, if their input is invalid, tell them, if their input is valid, work with it to get the right pokemon, sound and cards
 $("form").submit(function (event) {
@@ -287,25 +294,25 @@ $(":button").click(function (event) {
     if (event.target.id === "down") {
         pokeIndex--;
         if (pokeIndex < 0) pokeIndex = (allPokemon.length - 1)
-        setPokemon(pokeIndex + 1)
+        setPokemon(pokeIndex)
     }
     else if (event.target.id === "up") {
         pokeIndex++;
         if (pokeIndex > allPokemon.length - 1) pokeIndex = (0)
-        setPokemon(pokeIndex + 1)
+        setPokemon(pokeIndex)
     }
     else if (event.target.id === "left") {
         imageIndex--;
-        if (imageIndex < 0) imageIndex = (allPokemon[pokeIndex + 1].images.length - 1)
-        $("#pokeimg").attr("src", allPokemon[pokeIndex + 1].images[imageIndex])
-        $("#imagenum").text(`${allPokemon[pokeIndex + 1].images.length} / ${imageIndex + 1}`);
+        if (imageIndex < 0) imageIndex = (allPokemon[pokeIndex].images.length - 1)
+        $("#pokeimg").attr("src", allPokemon[pokeIndex].images[imageIndex])
+        $("#imagenum").text(`${allPokemon[pokeIndex].images.length} / ${imageIndex + 1}`);
 
     }
     else if (event.target.id === "right") {
         imageIndex++;
-        if (imageIndex > allPokemon[pokeIndex + 1].images.length - 1) imageIndex = (0)
-        $("#pokeimg").attr("src", allPokemon[pokeIndex + 1].images[imageIndex])
-        $("#imagenum").text(`${allPokemon[pokeIndex + 1].images.length} / ${imageIndex + 1}`);
+        if (imageIndex > allPokemon[pokeIndex].images.length - 1) imageIndex = (0)
+        $("#pokeimg").attr("src", allPokemon[pokeIndex].images[imageIndex])
+        $("#imagenum").text(`${allPokemon[pokeIndex].images.length} / ${imageIndex + 1}`);
     }
 })
 
@@ -320,4 +327,4 @@ var helpdisappear = $("#text");
 helpdisappear.hover(function () {
     helpdisappear.attr("class", "hide")
 },
-);
+);  
