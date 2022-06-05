@@ -311,7 +311,7 @@ $("#pokeimg").click(function (event) {
     modalToggle(event);
 });
 
-
+// modal toggle function so a user can see the pokemon cards in greater detail
 function modalToggle(event) {
     // we don't want to grow our base pokemon image so we only do anything if the imageIndex is 0, which corresponds to the base image
     if (imageIndex != 0) {
@@ -330,8 +330,7 @@ function modalToggle(event) {
     $(".modal").click(function(event) {
         modalToggle(event);
     });
-
-}
+};
 
 // user hint that goes away when scrolled over
 var helpdisappear = $("#text");
