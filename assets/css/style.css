@@ -1,6 +1,7 @@
 /* General */
 body {
     height: 100vh;
+    margin: 0 !important ;
 }
 
 h1 {
@@ -100,8 +101,9 @@ img {
 
 .zoomed {
     transform: scale(3, 3);
-    z-index: 6;
-    box-shadow: 5px 5px 5px;
+    z-index: 3;
+    box-shadow: 0px 0px 15px lightblue;
+    border-radius: 5px;
 }
 
 #imagenum {
@@ -180,6 +182,7 @@ img {
     position: absolute;
     left: 60px;
     top: 120px;
+    width: 182px;
 }
 
 #togglecards {
@@ -197,4 +200,19 @@ img {
     width: 100%;
     justify-content: space-between;
     font-size: 8px;
+}
+
+#loading {
+    position: absolute;
+    top: -16px;
+    left: -1px;
+    transform: scale(.85, .75);
+}
+
+.modal {
+    position: fixed;
+    background-color: rgb(0, 0, 0, .7);
+    width: 100%;
+    height: 100%;
+    z-index: 2;
 }
