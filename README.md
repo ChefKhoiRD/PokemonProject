@@ -36,7 +36,7 @@
 <br />
 
 ## <li> Must be deployed to GitHub Pages </li>
-### -- Project is deployed at github here ""
+### -- Project is deployed at github here "" https://chefkhoird.github.io/PokemonProject/
 
 <br />
 
