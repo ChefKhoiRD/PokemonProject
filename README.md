@@ -63,6 +63,15 @@
 
 <br />
 
+A circular loading animation will show at the top left of the application until all images for all pokemon has been loaded.
+
+<br />
+
+![pokemonreadmescreenshots](./assets/photos/pokemonprj5.png?raw=true "Pokemon Application 5")
+
+<br />
+
+
 # If you select and type in the search field the top 5 search options will show up. pressing enter will select the top search result, pressing enter again will search for the pokemon. The pokemon search field can also search for pokedex number if you know that and would like to use it.
 
 ![pokemonreadmescreenshots](./assets/photos/pokemonprj4.png?raw=true "Pokemon Application 4")
