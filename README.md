@@ -95,7 +95,7 @@
 
 <br />
 
-#If the application is loaded on a phone or the screen is shrunk it will split apart and stack vertically.
+# If the application is loaded on a phone or the screen is shrunk it will split apart and stack vertically.
 
 ![pokemonreadmescreenshots](./assets/photos/pokemonprj7.png?raw=true "Pokemon Application 7")
 
