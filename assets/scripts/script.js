@@ -11,37 +11,53 @@ var storedPokemon = JSON.parse(localStorage.getItem("allPokemon"));
 if (storedPokemon) allPokemon = storedPokemon;
 // variable to store our audio cry in
 var cry;
-// starts us off where we left loading so the page doesn't ask for the same info every reload
-var preloaded = allPokemon.length;
-
+var pokeUrls = [];
+// this variable will start us off where we left off loading all the pokemon, starts at 0 but will get reassigned later
+var preloaded = 0;
 // get all the pokemon and related info from the APIs
 async function getAllPokemon() {
     // get the list of pokemon from pokeAPI
     const fetcher = await fetch(`${pokeApiCoUrl}?limit=10000`);
     const data = await fetcher.json();
+    // for each pokemon in our allPokemon array
+    for (let checkload = 0; checkload < allPokemon.length; checkload++) {
+        // if there aren't any images, and thus there should be no other info
+        if(allPokemon[checkload].images === undefined) {
+            // set preloaded so we can start our next loop with it, end this loop
+            preloaded = checkload;
+            checkload = allPokemon.length;
+        };
+    };
     // for every pokemon in the list, starting from preloaded
     for (let i = preloaded; i < data.results.length; i++) {
         // trim off the URL from the pokemon #
         var urlPokeNum = getDataNumber(data.results[i].url);
         // end loop once we get to the end of real pokemon and not alternate forms/regional variants
         if (urlPokeNum != (i + 1)) i = data.results.length;
-        // if we don't already have the info for this pokemon, set up an object for it in our array
-        else if (!allPokemon[i]) await setPokeObj(data, i);
-        // reinitialize the autocomplete every time we get a new pokemon so we continually expand our autocomplete as we get more pokemon
-        autoComplete();
-        // unhide our body, we start hidden for a second to make sure we get at least some info for the user to play with to start off
-        $("body").removeClass("hide");
+        // if we don't already have the name for this pokemon, set up an object for it in our array with the name
+        else if (!allPokemon[i]) {
+            allPokemon[i] = {
+            name: trimPoke(data.results[i].name.charAt(0).toUpperCase() + data.results[i].name.slice(1))
+            }
+        };
+    };
+    // set up autoComplete after we get all the names set up
+    autoComplete();
+    // unhide our body since we have all the names
+    $("body").removeClass("hide");
+    // starting from preloaded going through all pokemon
+    for (let pokemon = preloaded; pokemon < allPokemon.length; pokemon++) {
+        // if there is no data besides the name, set up the rest of the data
+        if (allPokemon[pokemon].images === undefined) await setPokeObj(pokemon);
     };
     // once we've got all the pokemon, hide the loading icon
     $("#loading").addClass("hide");
 };
 
 // function to set up a pokemon object into the allPokemon object array
-async function setPokeObj(data, i) {
+async function setPokeObj(i) {
     // initialize empty temporary object so we can feed it into functions
     let tempPoke = {};
-    // set up the name
-    tempPoke.name = trimPoke(data.results[i].name.charAt(0).toUpperCase() + data.results[i].name.slice(1));
     // initialize an empty array for our images
     tempPoke.images = [];
     // set up info from pokeAPI
@@ -73,6 +89,7 @@ async function getPokeInfo(tempObj, pokeNum) {
     const fetcher = await fetch(`${pokeApiCoUrl}/${pokeNum + 1}`);
     const data = await fetcher.json();
     // set up the actual properties on the given object
+    tempObj.name = allPokemon[pokeNum].name;
     tempObj.height = data.height;
     tempObj.weight = data.weight;
     tempObj.types = data.types;
@@ -91,7 +108,8 @@ function setPokemonCry(pokemon) {
 };
 
 // controlling function to set up a pokemon on the page
-function setPokemon(pokemonNum) {
+async function setPokemon(pokemonNum) {
+    if (allPokemon[pokemonNum].images === undefined) await setPokeObj(pokemonNum);
     // set the pokeIndex to the pokemon the user searched
     pokeIndex = pokemonNum;
     // make sure to reset the zoom when pokemon is changed
@@ -210,7 +228,7 @@ function autoComplete() {
     for (names = 0; names < allPokemon.length; names++) {
         // push the name from allPokemon to pokemonNames
         pokemonNames.push(allPokemon[names].name)
-    }
+    };
     // set up the autocomplete with jquery
     $('#search').autocomplete({
         autoFocus: true,
